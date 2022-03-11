@@ -45,11 +45,13 @@ print(m);
 ax = plt.gca()
 PCM = ax.get_children()[0]
 plt.colorbar(PCM, ax=ax)
+plt.title("before optimization")
 plt.show()
 
 # optimize and plot
 m.optimize(messages=True,max_f_eval = 1000);
 figure = m.plot(legend=False, xlabel='Stim. Freq.' , ylabel='Stim. Amp.');
+plt.title("After optimization")
 plt.show()
 print(m)
 ax = plt.gca()
