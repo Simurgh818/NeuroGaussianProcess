@@ -1,13 +1,13 @@
 import numpy as np
 import matplotlib
-matplotlib.rcParams['figure.figsize']=(4,3)
+# matplotlib.rcParams['figure.figsize']=(4,3)
 from matplotlib_inline.config import InlineBackend
 from matplotlib import pyplot as plt
 plt.style.use('dark_background')
 import GPy
 import pandas as pd
 
-def run_GP_model(X,Y, ker):
+def run_GP_model(X,Y, ker, cond):
 
     # create simple GP model
     m = GPy.models.GPRegression(X,Y,ker)
@@ -15,24 +15,23 @@ def run_GP_model(X,Y, ker):
 
     GPy.plotting.change_plotting_library("matplotlib")
     # GPy.plotting.change_plotting_library('plotly')
-    fig1 = m.plot(legend=False, xlabel='Stim. Freq.', ylabel='Stim. Amp.',
-                  label="Mark_4sec_CA1PSD_ISO_freqamp_020619");
+    fig1 = m.plot(legend=False, xlabel='Stim. Freq.', ylabel='Stim. Amp.', label=None);
     print(m);
     ax = plt.gca()
     PCM = ax.get_children()[0]
     plt.colorbar(PCM, ax=ax)
-    plt.title("before optimization")
-    plt.show()
+    plt.title("before optimization " + cond)
+    # plt.show()
 
     # optimize and plot
     m.optimize(messages=True,max_f_eval = 1000);
-    figure = m.plot(legend=False, xlabel='Stim. Freq.' , ylabel='Stim. Amp.');
-    plt.title("After optimization")
-    plt.show()
+    figure = m.plot(legend=False, xlabel='Stim. Freq.' , ylabel='Stim. Amp.', label=None);
+    plt.title("After optimization " + cond)
     print(m)
-    ax = plt.gca()
-    PCM = ax.get_children()[0]
-    plt.colorbar(PCM, ax=ax)
+    ax2 = plt.gca()
+    PCM2 = ax2.get_children()[0]
+    plt.colorbar(PCM2, ax=ax2)
+    # plt.show()
     return
 
 def get_model_inputs(dataset_path, condition_rows):
@@ -49,10 +48,11 @@ def get_model_inputs(dataset_path, condition_rows):
     print(np.shape(Y))
     # Y.reset_index(drop=True, inplace=True)
     Y_reshape =Y[:, np.newaxis]
+    print("The gamma freq and corresponding columns to be selected: ")
     print(Y)
 
     plt.plot(condition_rows, np.array(Y))
-    plt.show()
+    # plt.show()
 
     X = CA1_df.iloc[condition_rows, 0:2]
     print(X)
@@ -64,15 +64,21 @@ def get_model_inputs(dataset_path, condition_rows):
 
 def main():
     dataset_path = "Mark_4sec_CA1PSD_ISO_freqamp_020619.csv";
-    condition = ['Anasthesia'] #, 'Awake'
-    if condition == 'Anasthesia':
-        condition_rows = np.arange(0,120);
-    else:
-        condition_rows = np.arange(121, 384);
+    condition = ['Anasthesia', 'Awake'] #,
+    for idx in range(len(condition)):
+        val =  condition[idx]
+        print("the val is: ", val)
+        if val == "Anasthesia":
+            condition_rows = np.arange(0,120);
+            print("--------------------------The Anastheisa model is running: --------------------------")
+        else:
+            condition_rows = np.arange(121, 384);
+            print("--------------------------The Awake model is running: --------------------------")
 
+        X, Y, ker = get_model_inputs(dataset_path, condition_rows);
+        run_GP_model(X,Y,ker, condition[idx]);
 
-    X, Y, ker = get_model_inputs(dataset_path, condition_rows);
-    run_GP_model(X,Y,ker);
+    plt.show()
 
     return
 
