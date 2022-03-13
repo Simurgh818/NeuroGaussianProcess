@@ -1,7 +1,7 @@
 import numpy as np
 import matplotlib
 # matplotlib.rcParams['figure.figsize']=(4,3)
-from matplotlib_inline.config import InlineBackend
+# from matplotlib_inline.config import InlineBackend
 from matplotlib import pyplot as plt
 plt.style.use('dark_background')
 import GPy
@@ -67,7 +67,7 @@ def main():
     condition = ['Anasthesia', 'Awake'] #,
     for idx in range(len(condition)):
         val =  condition[idx]
-        print("the val is: ", val)
+        print("the val is: ", val, '\n')
         if val == "Anasthesia":
             condition_rows = np.arange(0,120);
             print("--------------------------The Anastheisa model is running: --------------------------")
