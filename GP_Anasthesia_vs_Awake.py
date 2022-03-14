@@ -80,6 +80,14 @@ def main():
 
         X, Y, ker = get_model_inputs(dataset_path, condition_rows);
         model = run_GP_model(X,Y,ker, condition[idx]);
+        print("-------------------Sampling from optimized model-------------------")
+
+        testX = np.array([[32, 37,42, 47, 52], [0, 20, 30, 40, 50]])
+        testX = np.transpose(testX)
+        posteriorTestY = model.posterior_samples_f(testX, full_cov=True, size=3)
+        simY, simMse = model.predict(testX)
+        print("for sampling these test values for freq and amplitude: ", testX)
+        print("we get these model predictions: ", simY, simMse, '\n')
 
     plt.show()
 
