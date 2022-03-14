@@ -32,7 +32,7 @@ def run_GP_model(X,Y, ker, cond):
     PCM2 = ax2.get_children()[0]
     plt.colorbar(PCM2, ax=ax2)
     # plt.show()
-    return
+    return m
 
 def get_model_inputs(dataset_path, condition_rows):
 
@@ -51,7 +51,9 @@ def get_model_inputs(dataset_path, condition_rows):
     print("The gamma freq and corresponding columns to be selected: ")
     print(Y)
 
-    plt.plot(condition_rows, np.array(Y))
+    # plt.plot(condition_rows, np.array(Y))
+    # plt.ylabel("gamma power")
+    # plt.xlabel("trials")
     # plt.show()
 
     X = CA1_df.iloc[condition_rows, 0:2]
@@ -59,6 +61,7 @@ def get_model_inputs(dataset_path, condition_rows):
 
     # define kernel
     ker = GPy.kern.Matern52(2,ARD=True) + GPy.kern.White(2)
+
     return X,Y_reshape, ker
 
 
@@ -76,10 +79,10 @@ def main():
             print("--------------------------The Awake model is running: --------------------------")
 
         X, Y, ker = get_model_inputs(dataset_path, condition_rows);
-        run_GP_model(X,Y,ker, condition[idx]);
+        model = run_GP_model(X,Y,ker, condition[idx]);
 
     plt.show()
 
-    return
+    return model
 
-main()
+M = main()
