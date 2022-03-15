@@ -38,11 +38,11 @@ def get_model_inputs(dataset_path, condition_rows):
 
     # Import datasets as pandas
     CA1_df = pd.read_csv(dataset_path)
-    print(CA1_df)
-    print(CA1_df.describe())
+    # print(CA1_df)
+    # print(CA1_df.describe())
 
     # Select the Gamma  freq. stimulation
-    print(CA1_df.iloc[1, 133:152])
+    # print(CA1_df.iloc[1, 133:152])
     # calculate mean psd for Xk0 and Xk1
     Y = np.mean(CA1_df.iloc[condition_rows, 133:152],axis=1)
     print(np.shape(Y))
@@ -88,6 +88,7 @@ def main():
         simY, simMse = model.predict(testX)
         print("for sampling these test values for freq and amplitude: ", testX)
         print("we get these model predictions: ", simY, simMse, '\n')
+        plt.scatter(testX[:,0], testX[:,1], posteriorTestY[:,:,0], marker='o', c='b')
 
     plt.show()
 
