@@ -1,6 +1,6 @@
 import numpy as np
 import matplotlib
-# matplotlib.rcParams['figure.figsize']=(4,3)
+matplotlib.rcParams['figure.figsize']=(5,3)
 # from matplotlib_inline.config import InlineBackend
 from matplotlib import pyplot as plt
 plt.style.use('dark_background')
@@ -13,7 +13,7 @@ def run_GP_model(X,Y, ker, cond):
     m = GPy.models.GPRegression(X,Y,ker)
     print(m)
 
-    GPy.plotting.change_plotting_library("matplotlib")
+    # GPy.plotting.change_plotting_library("matplotlib",label=None, linewidth=1)
     # GPy.plotting.change_plotting_library('plotly')
     fig1 = m.plot(legend=False, xlabel='Stim. Freq.', ylabel='Stim. Amp.', label=None);
     print(m);
@@ -31,7 +31,17 @@ def run_GP_model(X,Y, ker, cond):
     ax2 = plt.gca()
     PCM2 = ax2.get_children()[0]
     plt.colorbar(PCM2, ax=ax2)
-    # plt.show()
+    
+    testX = np.array([[47, 52], [ 40, 50]])
+    testX = np.transpose(testX)
+    posteriorTestY = m.posterior_samples_f(testX, full_cov=True, size=3)
+    simY, simMse = m.predict(testX)
+    print("for sampling these test values for freq and amplitude: ", testX)
+    print("we get these model predictions: ", simY, simMse, '\n')
+    # GPy.plotting.show(figure)
+    plt.plot(testX[:,0], testX[:,1], posteriorTestY[:,:,0], marker='x', c='b')
+    
+    
     return m
 
 def get_model_inputs(dataset_path, condition_rows):
@@ -44,12 +54,13 @@ def get_model_inputs(dataset_path, condition_rows):
     # Select the Gamma  freq. stimulation
     # print(CA1_df.iloc[1, 133:152])
     # calculate mean psd for Xk0 and Xk1
-    Y = np.mean(CA1_df.iloc[condition_rows, 133:152],axis=1)
+    Y = np.array(np.mean(CA1_df.iloc[condition_rows, 133:152],axis=1))
     print(np.shape(Y))
     # Y.reset_index(drop=True, inplace=True)
+    # Y_reshape =np.array(Y[:, np.newaxis])
     Y_reshape =Y[:, np.newaxis]
-    print("The gamma freq and corresponding columns to be selected: ")
-    print(Y)
+    # print("The gamma freq and corresponding columns to be selected: ")
+    # print(np.shape(Y))
 
     # plt.plot(condition_rows, np.array(Y))
     # plt.ylabel("gamma power")
@@ -66,31 +77,27 @@ def get_model_inputs(dataset_path, condition_rows):
 
 
 def main():
-    dataset_path = "Mark_4sec_CA1PSD_ISO_freqamp_020619.csv";
+    dataset_path = "Mark_4sec_CA3PSD_ISO_freqamp_020619.csv";
+    print(dataset_path)
     condition = ['Anasthesia', 'Awake'] #,
     for idx in range(len(condition)):
         val =  condition[idx]
         print("the val is: ", val, '\n')
         if val == "Anasthesia":
-            condition_rows = np.arange(0,120);
+            condition_rows = np.arange(0,100);
             print("--------------------------The Anastheisa model is running: --------------------------")
         else:
-            condition_rows = np.arange(121, 384);
+            condition_rows = np.arange(101, 384);
             print("--------------------------The Awake model is running: --------------------------")
 
         X, Y, ker = get_model_inputs(dataset_path, condition_rows);
         model = run_GP_model(X,Y,ker, condition[idx]);
         print("-------------------Sampling from optimized model-------------------")
 
-        testX = np.array([[32, 37,42, 47, 52], [0, 20, 30, 40, 50]])
-        testX = np.transpose(testX)
-        posteriorTestY = model.posterior_samples_f(testX, full_cov=True, size=3)
-        simY, simMse = model.predict(testX)
-        print("for sampling these test values for freq and amplitude: ", testX)
-        print("we get these model predictions: ", simY, simMse, '\n')
-        plt.scatter(testX[:,0], testX[:,1], posteriorTestY[:,:,0], marker='o', c='b')
+      
+        plt.show()
 
-    plt.show()
+    # plt.show()
 
     return model
 
