@@ -7,6 +7,25 @@ plt.style.use('dark_background')
 import GPy
 import pandas as pd
 
+def sample_the_model(m, testX):
+    
+    simY = np.empty((2,2, 100))
+    simMse = np.empty((2,2, 100))
+    
+    for s in range(100):
+        posteriorTestY = m.posterior_samples_f(testX, full_cov=True, size=3)
+        print(np.shape(m.predict(testX)))
+        simY[:,:, s], simMse[:,:,s] = m.predict(testX)
+        
+    print("for sampling these test values for freq and amplitude: ", testX)
+    print("we get these model predictions: ", simY, simMse, '\n')
+    # GPy.plotting.show(figure)
+    plt.plot(testX[:,0], testX[:,1], posteriorTestY[:,:,0], marker='x', c='b')
+    plt.plot(testX[:,0], testX[:,1], simY - 3 * simMse ** 0.5, '--g')
+    plt.plot(testX[:,0], testX[:,1], simY + 3 * simMse ** 0.5, '--g')
+    
+    return simY, simMse, posteriorTestY
+
 def run_GP_model(X,Y, ker, cond):
 
     # create simple GP model
@@ -15,7 +34,7 @@ def run_GP_model(X,Y, ker, cond):
 
     # GPy.plotting.change_plotting_library("matplotlib",label=None, linewidth=1)
     # GPy.plotting.change_plotting_library('plotly')
-    fig1 = m.plot(legend=False, xlabel='Stim. Freq.', ylabel='Stim. Amp.', label=None);
+    fig1 = m.plot(legend=False, xlabel='Stim. Freq.', ylabel='Stim. Amp.', label=None, linewidth=2);
     print(m);
     ax = plt.gca()
     PCM = ax.get_children()[0]
@@ -25,22 +44,12 @@ def run_GP_model(X,Y, ker, cond):
 
     # optimize and plot
     m.optimize(messages=True,max_f_eval = 1000);
-    figure = m.plot(legend=False, xlabel='Stim. Freq.' , ylabel='Stim. Amp.', label=None);
+    figure = m.plot(legend=False, xlabel='Stim. Freq.' , ylabel='Stim. Amp.', label=None, linewidth=2);
     plt.title("After optimization " + cond)
     print(m)
     ax2 = plt.gca()
     PCM2 = ax2.get_children()[0]
     plt.colorbar(PCM2, ax=ax2)
-    
-    testX = np.array([[47, 52], [ 40, 50]])
-    testX = np.transpose(testX)
-    posteriorTestY = m.posterior_samples_f(testX, full_cov=True, size=3)
-    simY, simMse = m.predict(testX)
-    print("for sampling these test values for freq and amplitude: ", testX)
-    print("we get these model predictions: ", simY, simMse, '\n')
-    # GPy.plotting.show(figure)
-    plt.plot(testX[:,0], testX[:,1], posteriorTestY[:,:,0], marker='x', c='b')
-    
     
     return m
 
@@ -93,7 +102,10 @@ def main():
         X, Y, ker = get_model_inputs(dataset_path, condition_rows);
         model = run_GP_model(X,Y,ker, condition[idx]);
         print("-------------------Sampling from optimized model-------------------")
-
+        testX = np.array([[47, 52], [ 40, 50]])
+        testX = np.transpose(testX)
+        
+        simY, simMse, posteriorTestY = sample_the_model(model, testX)
       
         plt.show()
 

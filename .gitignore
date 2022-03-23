@@ -154,3 +154,4 @@ cython_debug/
 .idea
 GP_Anastheisa_vs_Awake.ipynb
 GPTutorial.ipynb
+*.ipynb
