@@ -14,15 +14,20 @@ def sample_the_model(m, testX):
     
     for s in range(100):
         posteriorTestY = m.posterior_samples_f(testX, full_cov=True, size=3)
-        print(np.shape(m.predict(testX)))
+        # print(np.shape(m.predict(testX)))
         simY[:,:, s], simMse[:,:,s] = m.predict(testX)
         
-    print("for sampling these test values for freq and amplitude: ", testX)
-    print("we get these model predictions: ", simY, simMse, '\n')
+    # print("for sampling these test values for freq and amplitude: ", testX)
+    # print("we get these model predictions: ", simY, simMse, '\n')
     # GPy.plotting.show(figure)
-    plt.plot(testX[:,0], testX[:,1], posteriorTestY[:,:,0], marker='x', c='b')
-    plt.plot(testX[:,0], testX[:,1], simY - 3 * simMse ** 0.5, '--g')
-    plt.plot(testX[:,0], testX[:,1], simY + 3 * simMse ** 0.5, '--g')
+    # plt.imshow([testX[:,0], testX[:,1], posteriorTestY[:,:,0]])
+    plt.figure()
+    ax = plt.subplot()
+    ax.imshow(posteriorTestY[:,:,0])
+
+    plt.show()
+    # plt.plot(testX[:,0], testX[:,1], simY - 3 * simMse ** 0.5, '--g')
+    # plt.plot(testX[:,0], testX[:,1], simY + 3 * simMse ** 0.5, '--g')
     
     return simY, simMse, posteriorTestY
 
@@ -111,6 +116,6 @@ def main():
 
     # plt.show()
 
-    return model
+    return model, testX, simY, simMse, posteriorTestY
 
-M = main()
+model, testX, simY, simMse, posteriorTestY = main()
