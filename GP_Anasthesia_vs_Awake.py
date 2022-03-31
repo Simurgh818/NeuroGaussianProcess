@@ -8,29 +8,31 @@ import GPy
 import pandas as pd
 
 def sample_the_model(m, testX):
+    posteriorTestY = np.empty((1,2, 100))
+    simY = np.empty((1,2, 100))
+    simMse = np.empty((1,2, 100))
     
-#     simY = np.empty((1,2, 100))
-#     simMse = np.empty((1,2, 100))
-    
-#     for s in range(100):
-#         posteriorTestY = m.posterior_samples_f(testX, full_cov=True, size=100)
-#         # print(np.shape(m.predict(testX)))
-#         simY[:,:, s], simMse[:,:,s] = m.predict(testX)
-    posteriorTestY = m.posterior_samples_f(testX, full_cov=True, size=100)
+    for s in range(100):
+        posteriorTestY[:,:,s] = m.posterior_samples_f(testX, full_cov=True, size=1)
         # print(np.shape(m.predict(testX)))
-    simY, simMse = m.predict(testX)
+        simY[:,:, s], simMse[:,:,s] = m.predict(testX)
+#     posteriorTestY = m.posterior_samples_f(testX, full_cov=True, size=100)
+#     simY, simMse = m.predict(testX)
         
     # print("for sampling these test values for freq and amplitude: ", testX)
     # print("we get these model predictions: ", simY, simMse, '\n')
-    # GPy.plotting.show(figure)
-    # plt.plot(testX[1,1], posteriorTestY)
-#     plt.figure()
-#     ax = plt.subplot()
-#     ax.imshow(posteriorTestY[:,:,0])
 
-#     plt.show()
-#     plt.plot(testX, simY[0,1,:] - 3 * simMse[1,1,:] ** 0.5, '--g')
-#     plt.plot(testX, simY[0,1,:] + 3 * simMse[1,1,:] ** 0.5, '--g')
+
+    # plt.plot(posteriorTestY[0,1,:])
+    # plt.plot(simY[0,1,:] - 3 * simMse[0,1,:] ** 0.5, '--g')
+    # plt.plot(simY[0,1,:] + 3 * simMse[0,1,:] ** 0.5, '--g')
+    # plt.show()
+    n, bins, patches = plt.hist(posteriorTestY[0,1,:], bins=10)
+    max_n = int(max(n))
+    plt.plot(simY[0,0,0:max_n], np.arange(0,max_n),'r--')
+    plt.plot(simY[0,0,0:max_n] - 3 * simMse[0,0,0:max_n] ** 0.5, np.arange(0,max_n),'--g')
+    plt.plot(simY[0,0,0:max_n] + 3 * simMse[0,0,0:max_n] ** 0.5, np.arange(0,max_n), '--g')
+    plt.show()
     
     return simY, simMse, posteriorTestY
 
@@ -109,13 +111,14 @@ def main():
 
         X, Y, ker = get_model_inputs(dataset_path, condition_rows);
         model = run_GP_model(X,Y,ker, condition[idx]);
+        plt.show()
         print("-------------------Sampling from optimized model-------------------")
         testX = np.array([[47], [40]]) #52 , 50
         testX = np.transpose(testX)
         
         simY, simMse, posteriorTestY = sample_the_model(model, testX)
       
-        plt.show()
+       
 
     # plt.show()
 
