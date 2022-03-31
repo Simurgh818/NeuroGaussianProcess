@@ -9,25 +9,28 @@ import pandas as pd
 
 def sample_the_model(m, testX):
     
-    simY = np.empty((2,2, 100))
-    simMse = np.empty((2,2, 100))
+#     simY = np.empty((1,2, 100))
+#     simMse = np.empty((1,2, 100))
     
-    for s in range(100):
-        posteriorTestY = m.posterior_samples_f(testX, full_cov=True, size=3)
+#     for s in range(100):
+#         posteriorTestY = m.posterior_samples_f(testX, full_cov=True, size=100)
+#         # print(np.shape(m.predict(testX)))
+#         simY[:,:, s], simMse[:,:,s] = m.predict(testX)
+    posteriorTestY = m.posterior_samples_f(testX, full_cov=True, size=100)
         # print(np.shape(m.predict(testX)))
-        simY[:,:, s], simMse[:,:,s] = m.predict(testX)
+    simY, simMse = m.predict(testX)
         
     # print("for sampling these test values for freq and amplitude: ", testX)
     # print("we get these model predictions: ", simY, simMse, '\n')
     # GPy.plotting.show(figure)
-    # plt.imshow([testX[:,0], testX[:,1], posteriorTestY[:,:,0]])
-    plt.figure()
-    ax = plt.subplot()
-    ax.imshow(posteriorTestY[:,:,0])
+    # plt.plot(testX[1,1], posteriorTestY)
+#     plt.figure()
+#     ax = plt.subplot()
+#     ax.imshow(posteriorTestY[:,:,0])
 
-    plt.show()
-    # plt.plot(testX[:,0], testX[:,1], simY - 3 * simMse ** 0.5, '--g')
-    # plt.plot(testX[:,0], testX[:,1], simY + 3 * simMse ** 0.5, '--g')
+#     plt.show()
+#     plt.plot(testX, simY[0,1,:] - 3 * simMse[1,1,:] ** 0.5, '--g')
+#     plt.plot(testX, simY[0,1,:] + 3 * simMse[1,1,:] ** 0.5, '--g')
     
     return simY, simMse, posteriorTestY
 
@@ -107,7 +110,7 @@ def main():
         X, Y, ker = get_model_inputs(dataset_path, condition_rows);
         model = run_GP_model(X,Y,ker, condition[idx]);
         print("-------------------Sampling from optimized model-------------------")
-        testX = np.array([[47, 52], [ 40, 50]])
+        testX = np.array([[47], [40]]) #52 , 50
         testX = np.transpose(testX)
         
         simY, simMse, posteriorTestY = sample_the_model(model, testX)
