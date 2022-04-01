@@ -22,7 +22,6 @@ def sample_the_model(m, testX):
     # print("for sampling these test values for freq and amplitude: ", testX)
     # print("we get these model predictions: ", simY, simMse, '\n')
 
-
     # plt.plot(posteriorTestY[0,1,:])
     # plt.plot(simY[0,1,:] - 3 * simMse[0,1,:] ** 0.5, '--g')
     # plt.plot(simY[0,1,:] + 3 * simMse[0,1,:] ** 0.5, '--g')
@@ -47,7 +46,7 @@ def run_GP_model(X,Y, ker, cond):
 
     # GPy.plotting.change_plotting_library("matplotlib",label=None, linewidth=1)
     # GPy.plotting.change_plotting_library('plotly')
-    fig1 = m.plot(legend=False, xlabel='Stim. Freq.', ylabel='Stim. Amp.', label=None, linewidth=2);
+    fig1 = m.plot(visible_dims=[0,1], legend=False, xlabel='Stim. Freq.', ylabel='Stim. Amp.', label=None, linewidth=2);
     print(m);
     ax = plt.gca()
     PCM = ax.get_children()[0]
@@ -57,7 +56,7 @@ def run_GP_model(X,Y, ker, cond):
 
     # optimize and plot
     m.optimize(messages=True,max_f_eval = 1000);
-    figure = m.plot(legend=False, xlabel='Stim. Freq.' , ylabel='Stim. Amp.', label=None, linewidth=2);
+    figure = m.plot(visible_dims=[0,1], legend=False, xlabel='Stim. Freq.' , ylabel='Stim. Amp.', label=None, linewidth=2);
     plt.title("After optimization " + cond)
     print(m)
     ax2 = plt.gca()
@@ -89,7 +88,7 @@ def get_model_inputs(dataset_path, condition_rows):
     # plt.xlabel("trials")
     # plt.show()
 
-    X = CA1_df.iloc[condition_rows, 0:2]
+    X = CA1_df.iloc[condition_rows,  np.r_[0:2, 33:52]]
     print(X)
 
     # define kernel
