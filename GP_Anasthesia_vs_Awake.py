@@ -32,6 +32,9 @@ def sample_the_model(m, testX):
     plt.plot(simY[0,0,0:max_n], np.arange(0,max_n),'r--')
     plt.plot(simY[0,0,0:max_n] - 3 * simMse[0,0,0:max_n] ** 0.5, np.arange(0,max_n),'--g')
     plt.plot(simY[0,0,0:max_n] + 3 * simMse[0,0,0:max_n] ** 0.5, np.arange(0,max_n), '--g')
+    plt.ylabel("count")
+    plt.xlabel("gamma power")
+    plt.legend(["mean","3 Std. Dev."])
     plt.show()
     
     return simY, simMse, posteriorTestY
@@ -117,6 +120,7 @@ def main():
         testX = np.transpose(testX)
         
         simY, simMse, posteriorTestY = sample_the_model(model, testX)
+        plt.show()
       
        
 
