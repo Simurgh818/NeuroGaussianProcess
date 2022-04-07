@@ -89,12 +89,18 @@ def get_model_inputs(dataset_path, condition_rows):
     # plt.show()
 
     X = CA1_df.iloc[condition_rows,  np.r_[0:2, 33:52]]
-    print(X)
-
+    # print(X)
+    
+    # Conditioning on min or max of preStimululation gamma
+    min_preStim_gamma = np.min(X.iloc[:,2:])
+    median_min_preStim_gamma = np.median(min_preStim_gamma)
+    X_conditioned = X
+    X_conditioned.iloc[:,2:]= median_min_preStim_gamma
+    print(X_conditioned)
     # define kernel
     ker = GPy.kern.Matern52(2,ARD=True) + GPy.kern.White(2)
 
-    return X,Y_reshape, ker
+    return X_conditioned,Y_reshape, ker
 
 
 def main():
