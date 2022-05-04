@@ -152,16 +152,6 @@ cython_debug/
 #.idea/
 /.idea/
 .idea
-GP_Anastheisa_vs_Awake.ipynb
-GPTutorial.ipynb
-*.ipynb
-.idea/misc.xml
-.idea/NeuroGaussianProcess.iml
-GP_Anastheisa_vs_Awake.ipynb
-GPTutorial.ipynb
-.idea/misc.xml
-.idea/NeuroGaussianProcess.iml
-GP_Anastheisa_vs_Awake.ipynb
 GPTutorial.ipynb
 .idea/misc.xml
 .idea/NeuroGaussianProcess.iml
