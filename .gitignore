@@ -155,3 +155,4 @@ cython_debug/
 GPTutorial.ipynb
 .idea/misc.xml
 .idea/NeuroGaussianProcess.iml
+*.jupyterlab-workspace
