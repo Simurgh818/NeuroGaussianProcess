@@ -156,3 +156,7 @@ GPTutorial.ipynb
 .idea/misc.xml
 .idea/NeuroGaussianProcess.iml
 *.jupyterlab-workspace
+*.iml
+*.xml
+*.iml
+.idea/misc.xml
